@@ -1,19 +1,10 @@
 #!/bin/bash
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 for ALBUM in data/albums/*; do
-    cd $ALBUM
-    #TEX=$ALBUM/album.tex
-    #BASE=$(basename $TEX ".tex")
-    #DIR=$(dirname $TEX)
+    cd $DIR/$ALBUM
     pdflatex album
     makeindex album
     pdflatex album
     pdflatex album
 done
-
-
-#pdflatex main
-#bibtex main
-#makeindex main
-#pdflatex main
-#pdflatex main

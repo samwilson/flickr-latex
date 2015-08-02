@@ -57,8 +57,8 @@ foreach ($photoData as $photo)
     echo "  } % End caption\n"
         ."  \\end{center}\n"
         ."\\end{figure}\n\n";
-    //if ($img_count>0 && $img_count%12==0) echo '\clearpage';
-    //$img_count++;
+    if ($img_count>0 && $img_count%12==0) echo '\clearpage';
+    $img_count++;
 }
 ?>
 

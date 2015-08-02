@@ -36,8 +36,7 @@ function downloadGroup($flickrLatex, $dataDir, $groupId) {
     $photoData = array();
     $page = 1;
     while ($page) {
-        $photos = $flickrLatex->request('flickr.groups.pools.getPhotos', ['group_id' => $groupId, 'page' => $page, 'per_page' => 5]);
-        //print_r($photos);exit();
+        $photos = $flickrLatex->request('flickr.groups.pools.getPhotos', ['group_id' => $groupId, 'page' => $page, 'per_page' => 500]);
         echo "Getting page $page of " . $photos['photos']['pages'] . "\n";
         // Get all these photos.
         foreach ($photos['photos']['photo'] as $photo) {

@@ -6,7 +6,8 @@ https://github.com/samwilson/flickr-latex
 ## Requirements
 
 * PHP
-* LaTeX, if you want to use the LaTeX output
+* Composer
+* LaTeX
 
 ## Installation
 
@@ -17,3 +18,12 @@ https://github.com/samwilson/flickr-latex
 
 ## Usage
 
+1. Run `php download.php` to get the photos and build the LaTeX source.
+2. Run `./typeset.sh` to compile the LaTeX source and produce the PDFs.
+
+The PDFs are in `/data/albums/<album-id>/`.
+
+## Feedback
+
+If you have any feedback about issues, feature requests, etc. please report them
+via https://github.com/samwilson/flickr-latex/issues
