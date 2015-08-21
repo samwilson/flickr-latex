@@ -14,7 +14,7 @@ https://github.com/samwilson/flickr-latex
 1. Clone from Github: `git clone https://github.com/samwilson/flickr-latex`
 2. Run `composer install`
 3. `cp config.dist.php` to `config.php` and add your API details
-4. Navigate to 
+4. Navigate to `authenticate.php`
 
 ## Usage
 

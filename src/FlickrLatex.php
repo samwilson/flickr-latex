@@ -94,15 +94,16 @@ class FlickrLatex {
         $photoDatum = array(
             'id' => $id,
             'user_id' => $photoInfo['photo']['owner']['nsid'],
-            'date_taken' => $dateTaken,
+            'date_taken_value' => $dateTaken,
             'granularity' => $photoInfo['photo']['dates']['takengranularity'],
+            'date_taken' => Latex::flickrDate($dateTaken, $photoInfo['photo']['dates']['takengranularity']),
             'title' => trim($photoInfo['photo']['title']['_content'], '.') . '.', // Ensure has trailing full stop.
             'description' => $description,
-            'tags' => $photoInfo['photo']['tags']['tag'],
+            'tags' => array(),
         );
-
-        //echo '    '.$photoDatum['date_taken'].' -- '.$photoDatum['granularity']."\n";
-        //echo '    '.flickrDate($photoDatum['date_taken'], $photoDatum['granularity']),"\n";
+        foreach ($photoInfo['photo']['tags']['tag'] as $tag) {
+            $photoDatum['tags'][] = $tag['raw'];
+        }
 
         $localDir = $this->dataDir . "/photos/$id";
         if (!is_dir($localDir)) {
@@ -126,19 +127,11 @@ class FlickrLatex {
         // Medium. https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
         $medUrl = 'https://farm' . $farm . '.staticflickr.com/' . $server . '/' . $id . '_' . $scrt . '_c.jpg';
         if (!file_exists($localDir . '/medium.jpg')) {
-//            $curl = new \Curl\Curl();
-//            $curl->get($medUrl);
-//            if ($curl->error) {
-//                echo $curl->error_code;
-//            } else {
-//                print_r($curl->response_headers);
-//            }
-//            echo "$medUrl\n";
             file_put_contents($localDir . '/medium.jpg', file_get_contents($medUrl));
-            //exit();
         }
         // Metadata.
-        file_put_contents($localDir . '/metadata.json', json_encode($photoInfo['photo']));
+        $metadata = \Symfony\Component\Yaml\Yaml::dump($photoDatum);
+        file_put_contents($localDir . '/metadata.yml', $metadata);
 
         return $photoDatum;
     }

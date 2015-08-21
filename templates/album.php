@@ -35,20 +35,18 @@
 $img_count = 0;
 foreach ($photoData as $photo)
 {
-    //$date = date('g:iA l, F j Y', strtotime($photo['date_taken']));
-    $date = flickrDate($photo['date_taken'], $photo['granularity']);
-    $title = texEsc($photo['title']);
+    $title = \Samwilson\FlickrLatex\Latex::texEsc($photo['title']);
     echo '\begin{figure}'."\n"
         .'  \begin{center}'."\n"
         .'  \includegraphics{'.$dataDir.'/photos/'.$photo['id'].'/medium.jpg}'."\n"
-        .'  \caption['.$date.': '.$title.']{'.$date.': \\textbf{'.$title.'}'."\n";
-    echo '    '.texEsc($photo['description']);
+        .'  \caption['.$photo['date_taken'].': '.$title.']{'.$photo['date_taken'].': \\textbf{'.$title.'}'."\n";
+    echo '    '.\Samwilson\FlickrLatex\Latex::texEsc($photo['description']);
     if (count($tags = $photo['tags']) > 0)
     {
         $tag_links = array();
         foreach($tags as $tag)
         {
-            $t = texEsc($tag['raw']);
+            $t = \Samwilson\FlickrLatex\Latex::texEsc($tag);
             $tag_links[] = '\index{'.$t.'} \textsc{'.$t.'}';
         }
         echo '    {\small '.join(', ', $tag_links)."}\n";

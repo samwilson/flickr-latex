@@ -11,6 +11,7 @@
         "twig/twig": "~1.0",
         "curl/curl": "~1.0",
         "league/oauth1-client": "~1.0",
-        "yohang/calendr": "~1.0"
+        "yohang/calendr": "~1.0",
+        "symfony/yaml": "^2.7"
     }
 }
