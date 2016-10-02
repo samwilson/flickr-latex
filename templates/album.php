@@ -1,3 +1,4 @@
+<?php use Samwilson\FlickrLatex\Latex; ?>
 \documentclass{book}
 \usepackage[a4paper]{geometry}
 \usepackage{grffile}
@@ -23,7 +24,7 @@
 \renewcommand{\figurename}{}
 \SetFigLayout[3]{2}{1}
 \renewcommand{\listfigurename}{Contents}
-\title{<?= $title ?>}
+\title{<?php echo $title ?>}
 \date{}
 \begin{document}
 \maketitle
@@ -33,29 +34,30 @@
 \chapter{Photographs}
 <?php
 $img_count = 0;
-foreach ($photoData as $photo)
-{
-    $title = \Samwilson\FlickrLatex\Latex::texEsc($photo['title']);
+foreach ($photoData as $photo) {
+    $title = Latex::texEsc($photo['title']);
     echo '\begin{figure}'."\n"
-        .'  \begin{center}'."\n"
-        .'  \includegraphics{'.$dataDir.'/photos/'.$photo['id'].'/medium.jpg}'."\n"
-        .'  \caption['.$photo['date_taken'].': '.$title.']{'.$photo['date_taken'].': \\textbf{'.$title.'}'."\n";
-    echo '    '.\Samwilson\FlickrLatex\Latex::texEsc($photo['description']);
-    if (count($tags = $photo['tags']) > 0)
-    {
+         .'  \begin{center}'."\n"
+         .'  \includegraphics{'.$dataDir.'/photos/'.$photo['id'].'/medium.jpg}'."\n"
+         .'  \caption['.$photo['date_taken'].': '.$title.']'
+         .'{'.$photo['date_taken'].': \\textbf{'.$title.'}'."\n";
+    echo '    ' . Latex::texEsc($photo['description']);
+    if (count($tags = $photo['tags']) > 0) {
         $tag_links = array();
-        foreach($tags as $tag)
-        {
-            $t = \Samwilson\FlickrLatex\Latex::texEsc($tag);
+        foreach ($tags as $tag) {
+            $t = Latex::texEsc($tag);
             $tag_links[] = '\index{'.$t.'} \textsc{'.$t.'}';
         }
         echo '    {\small '.join(', ', $tag_links)."}\n";
     }
-    echo '    \hfill {\tiny \href{https://www.flickr.com/photos/'.$photo['user_id'].'/'.$photo['id'].'}{'.$photo['id'].'}}'."\n";
+    $url = 'https://www.flickr.com/photos/'.$photo['user_id'].'/'.$photo['id'];
+    echo '    \hfill {\tiny \href{'.$url.'}{'.$photo['id'].'}}'."\n";
     echo "  } % End caption\n"
         ."  \\end{center}\n"
         ."\\end{figure}\n\n";
-    if ($img_count>0 && $img_count%12==0) echo '\clearpage';
+    if ($img_count>0 && $img_count%12==0) {
+        echo '\clearpage';
+    }
     $img_count++;
 }
 ?>

@@ -2,9 +2,10 @@
 
 namespace Samwilson\FlickrLatex;
 
-class Group {
+class Group
+{
 
-    /** @var Samwilson\FlickrLatex\FlickrLatex */
+    /** @var \Samwilson\FlickrLatex\FlickrLatex */
     protected $flickrLatex;
 
     /** @var string */
@@ -13,16 +14,23 @@ class Group {
     /** @var string */
     protected $templateDir;
 
-    public function __construct($flickrLatex, $dataDir, $templateDir) {
+    public function __construct($flickrLatex, $dataDir, $templateDir)
+    {
         $this->flickrLatex = $flickrLatex;
         $this->dataDir = $dataDir;
         $this->templateDir = $templateDir;
     }
 
-    function download($groupId) {
+    function download($groupId)
+    {
         $maxPages = 2;
         $info = $this->flickrLatex->request('flickr.groups.getInfo', ['group_id' => $groupId]);
-        $title = $info['group']['name']['_content'];
+        if (!isset($info->group)) {
+            echo "Unable to get group info for group $groupId -- returned was:\n";
+            print_r($info);
+            exit(1);
+        }
+        $title = $info->group->name->_content;
         echo "====== Downloading photos for group: $title ======\n";
 
         // Loop through all pages of photos for this group.
@@ -30,13 +38,13 @@ class Group {
         $page = 1;
         while ($page) {
             $photos = $this->flickrLatex->request('flickr.groups.pools.getPhotos', ['group_id' => $groupId, 'page' => $page, 'per_page' => 500]);
-            echo "Getting page $page of " . $photos['photos']['pages'] . "\n";
+            echo "Getting page $page of " . $photos->photos->pages . "\n";
             // Get all these photos.
-            foreach ($photos['photos']['photo'] as $photo) {
-                $photoDatum = $this->flickrLatex->singlePhoto($photo['id']);
+            foreach ($photos->photos->photo as $photo) {
+                $photoDatum = $this->flickrLatex->singlePhoto($photo->id);
                 $photoData[uniqid($photoDatum['date_taken'])] = $photoDatum;
             }
-            if ($page < min($photos['photos']['pages'], $maxPages)) {
+            if ($page < min($photos->photos->pages, $maxPages)) {
                 $page++;
             } else {
                 $page = false;
@@ -56,5 +64,4 @@ class Group {
         file_put_contents($albumDir . '/album.tex', $latex);
 
     }
-
 }
