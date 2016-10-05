@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/samwilson/flickr-latex.png?label=ready&title=Ready)](https://waffle.io/samwilson/flickr-latex)
 Print Flickr Groups as LaTeX photo albums
 =========================================
 
