@@ -9,17 +9,22 @@
 		}
 	},
 	"require": {
-		"twig/twig": "~1.0",
 		"lusitanian/oauth": "~0.3",
 		"yohang/calendr": "~1.0",
 		"symfony/yaml": "^2.7"
 	},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^2.7"
+	},
 	"script": {
-		"post-install-cmd": [
+		"mkconfig":  [
 			"php -r \"file_exists('config.php') || copy('config_dist.php', 'config.php');\""
 		],
+		"post-install-cmd":[
+			"composer mkconfig"
+		],
 		"post-update-cmd": [
-			"php -r \"file_exists('config.php') || copy('config_dist.php', 'config.php');\""
+			"composer mkconfig"
 		]
 	}
 }

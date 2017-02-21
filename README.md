@@ -38,9 +38,6 @@ able to run without any interaction (e.g. as a cronjob).
 If you have any feedback about issues, feature requests, etc. please report them
 via https://github.com/samwilson/flickr-latex/issues
 
-We use Waffle.io to track issues:
-[![Stories in Ready](https://badge.waffle.io/samwilson/flickr-latex.png?label=ready&title=Ready)](https://waffle.io/samwilson/flickr-latex)
-
 ## Licence (GPL-3.0+)
 
 Copyright © 2016 [Sam Wilson](https://samwilson.id.au/)

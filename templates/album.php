@@ -1,8 +1,10 @@
 <?php use Samwilson\FlickrLatex\Latex; ?>
 \documentclass{book}
-\usepackage[a4paper]{geometry}
+\usepackage[letterpaper]{geometry}
 \usepackage{grffile}
 \usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[utf8]{inputenc}
 \usepackage{float}
 
 \usepackage{hyperref}
@@ -38,7 +40,7 @@ foreach ($photoData as $photo) {
     $title = Latex::texEsc($photo['title']);
     echo '\begin{figure}'."\n"
          .'  \begin{center}'."\n"
-         .'  \includegraphics{'.$dataDir.'/photos/'.$photo['id'].'/medium.jpg}'."\n"
+         .'  \includegraphics{'.$dataDir.'/photos/'.$photo['id'].'/photo.jpg}'."\n"
          .'  \caption['.$photo['date_taken'].': '.$title.']'
          .'{'.$photo['date_taken'].': \\textbf{'.$title.'}'."\n";
     echo '    ' . Latex::texEsc($photo['description']);

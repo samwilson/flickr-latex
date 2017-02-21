@@ -52,6 +52,10 @@ if (!$flickrLatex->authorized()) {
     exit(1);
 }
 
+//$groups = $flickrLatex->request('flickr.people.getGroups', ['user_id'=>$flickrLatex->getUserId()]);
+//print_r($groups);
+//exit();
+
 // Download each group's photos.
 foreach ($groups as $groupId) {
     $group = new Group($flickrLatex, $dataDir, __DIR__.'/templates');

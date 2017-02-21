@@ -21,7 +21,11 @@ class Group
         $this->templateDir = $templateDir;
     }
 
-    function download($groupId)
+    /**
+     * Download all photos in the given group.
+     * @param string $groupId
+     */
+    public function download($groupId)
     {
         $maxPages = 2;
         $info = $this->flickrLatex->request('flickr.groups.getInfo', ['group_id' => $groupId]);
@@ -42,7 +46,7 @@ class Group
             // Get all these photos.
             foreach ($photos->photos->photo as $photo) {
                 $photoDatum = $this->flickrLatex->singlePhoto($photo->id);
-                $photoData[uniqid($photoDatum['date_taken'])] = $photoDatum;
+                $photoData[uniqid($photoDatum['date_taken_raw'])] = $photoDatum;
             }
             if ($page < min($photos->photos->pages, $maxPages)) {
                 $page++;
@@ -62,6 +66,5 @@ class Group
             mkdir($albumDir, 0755, true);
         }
         file_put_contents($albumDir . '/album.tex', $latex);
-
     }
 }

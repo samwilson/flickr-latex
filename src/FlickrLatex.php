@@ -13,9 +13,17 @@ use Symfony\Component\Yaml\Yaml;
 class FlickrLatex
 {
 
-    private $apiKey;
-    private $apiSecret;
-    private $dataDir;
+    /** @var string */
+    protected $apiKey;
+
+    /** @var string */
+    protected $apiSecret;
+
+    /** @var string */
+    protected $dataDir;
+
+    /** @var string The ID of the current user. */
+    protected $userId;
 
     /** @var  AbstractService */
     protected $flickrService;
@@ -69,7 +77,16 @@ class FlickrLatex
             return false;
         }
         $result = $this->request('flickr.test.login');
-        return ( isset($result->stat) && $result->stat === 'ok' );
+        if (!isset($result->stat) || !$result->stat === 'ok') {
+            return false;
+        }
+        $this->userId = $result->user->id;
+        return true;
+    }
+
+    public function getUserId()
+    {
+        return $this->userId;
     }
 
     /**
@@ -104,8 +121,6 @@ class FlickrLatex
     public function getPhotosets()
     {
         $result = $this->request('flickr.photosets.getList');
-
-        //print_r(array_keys($result));
         return $result['photosets']['photoset'];
     }
 
@@ -124,12 +139,18 @@ class FlickrLatex
         }
     }
 
+	/**
+	 * @param string $id
+	 * @return string[]
+	 */
     public function singlePhoto($id)
     {
         $photoInfo = $this->request('flickr.photos.getInfo', array( 'photo_id' => $id ));
+        if (!isset($photoInfo->photo)) {
+            return [];
+        }
         //print_r($photoInfo);
-        echo "  " . $photoInfo->photo->id . " -- " . $photoInfo->photo->title->_content .
-             "\n";
+        echo "  " . $photoInfo->photo->id . " -- " . $photoInfo->photo->title->_content . "\n";
 
         // Compile required info.
         $dateTaken = $photoInfo->photo->dates->taken;
@@ -143,6 +164,7 @@ class FlickrLatex
             'user_id' => $photoInfo->photo->owner->nsid,
             'date_taken_value' => $dateTaken,
             'granularity' => $photoInfo->photo->dates->takengranularity,
+            'date_taken_raw' => $dateTaken,
             'date_taken' => Latex::flickrDate(
                 $dateTaken,
                 $photoInfo->photo->dates->takengranularity
@@ -158,16 +180,16 @@ class FlickrLatex
 
         $localDir = $this->dataDir . "/photos/$id";
         if (!is_dir($localDir)) {
-            mkdir($localDir, 0755, true);
+            mkdir($localDir, 0750, true);
         }
 
         // Download files.
         $farm = $photoInfo->photo->farm;
         $server = $photoInfo->photo->server;
-        $scrt = $photoInfo->photo->secret;
+        $secret = $photoInfo->photo->secret;
 
         // Original?
-        if (isset($photoInfo->photo->originalsecret)) {
+        /*if (isset($photoInfo->photo->originalsecret)) {
             $origScrt = $photoInfo->photo->originalsecret;
             $origFmt = $photoInfo->photo->originalformat;
             $origUrl =
@@ -179,13 +201,13 @@ class FlickrLatex
                     file_get_contents($origUrl)
                 );
             }
-        }
-        // Medium. https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
-        $medUrl =
-            'https://farm' . $farm . '.staticflickr.com/' . $server . '/' . $id . '_' . $scrt .
-            '_c.jpg';
-        if (!file_exists($localDir . '/medium.jpg')) {
-            file_put_contents($localDir . '/medium.jpg', file_get_contents($medUrl));
+        }*/
+        // Download large size.
+        // https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
+        $photoUrl = 'https://farm' . $farm . '.staticflickr.com/'
+                    . $server . '/' . $id . '_' . $secret . '_b.jpg';
+        if (!file_exists($localDir . '/photo.jpg')) {
+            file_put_contents($localDir . '/photo.jpg', file_get_contents($photoUrl));
         }
         // Metadata.
         $metadata = Yaml::dump($photoDatum);

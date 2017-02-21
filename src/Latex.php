@@ -16,8 +16,8 @@ class Latex
     public static function flickrDate($time, $granularity)
     {
         $granularities = array(
-            '0' => 'Y-m-d H:i:s',
-            '4' => 'Y-m',
+            '0' => 'Y M j g:i a',
+            '4' => 'Y M',
             '6' => 'Y',
             '8' => '\c.~Y',
         );
